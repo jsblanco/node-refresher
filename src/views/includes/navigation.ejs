@@ -1,3 +1,4 @@
+<%- include('./body-start.ejs') %>
 <header class="main-header">
 	<nav class="main-header__nav">
 		<ul class="main-header__item-list">
@@ -15,14 +16,23 @@
 				</a>
 			</li>
 			<li class="main-header__item">
-				<a class="<%= path === '/admin/add-product' ? 'active' : '' %>"
-					href="/admin/add-product">
+				<a class="<%= path === '/orders' ? 'active' : '' %>" href="/orders">
+					My orders
+				</a>
+			</li>
+			<li class="main-header__item">
+				<a
+					class="<%= path === '/admin/add-product' ? 'active' : '' %>"
+					href="/admin/add-product"
+				>
 					Add Product
 				</a>
 			</li>
 			<li class="main-header__item">
-				<a class="<%= path === '/admin/products' ? 'active' : '' %>"
-					href="/admin/products">
+				<a
+					class="<%= path === '/admin/products' ? 'active' : '' %>"
+					href="/admin/products"
+				>
 					Admin products
 				</a>
 			</li>

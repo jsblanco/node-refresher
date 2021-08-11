@@ -7,7 +7,6 @@ const p = path.join(
   'data',
   'products.json'
 );
-console.log(p)
 
 const getProductsFromFile = (cb: any) => {
   fs.readFile(p, (err, fileContent) => err
@@ -17,10 +16,13 @@ const getProductsFromFile = (cb: any) => {
 };
 
 export class Product {
+
   constructor(
-    public title: string,
-  ) {
-  }
+    public title: string ,
+    public imageUrl: string,
+    public description: string,
+    public price: number,
+  ) { }
 
   save() {
     getProductsFromFile((products: Product[]) => {
@@ -32,4 +34,18 @@ export class Product {
   static fetchAll(cb: (e: any) => void) {
     getProductsFromFile(cb);
   }
-};
+  
+  static adapter = (item: ProductCandidate) => new Product(
+    item.title,
+    item.imageUrl ,
+    item.description ,
+    +item.price,
+    )
+  };
+
+interface ProductCandidate {
+  title: string,
+  imageUrl: string,
+  description: string,
+  price: string | number,
+}

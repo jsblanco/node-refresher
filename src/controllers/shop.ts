@@ -2,7 +2,7 @@ import { RequestHandler } from 'express';
 import { Product } from '../models/product';
 
 
-export const getIndex: RequestHandler = (_, res) => {
+export const getIndex: RequestHandler = (_, res) =>
 	Product.fetchAll((products) => {
 		res.render('shop/index', {
 			path: '/',
@@ -10,9 +10,8 @@ export const getIndex: RequestHandler = (_, res) => {
 			prods: products,
 		});
 	});
-};
 
-export const getAllProducts: RequestHandler = (_, res) => {
+export const getAllProducts: RequestHandler = (_, res) =>
 	Product.fetchAll((products) => {
 		res.render('shop/product-list', {
 			path: '/products',
@@ -20,18 +19,22 @@ export const getAllProducts: RequestHandler = (_, res) => {
 			prods: products,
 		});
 	});
-};
 
-export const getCart: RequestHandler = (_, res) => {
+export const getCart: RequestHandler = (_, res) =>
 	res.render('shop/cart', {
 		path: '/cart',
 		pageTitle: 'Your cart',
 	});
-};
 
-export const getCheckout: RequestHandler = (_, res) => {
+
+export const getOrders: RequestHandler = (_, res) =>
+	res.render('shop/orders', {
+		path: '/orders',
+		pageTitle: 'Your orders',
+	});
+
+export const getCheckout: RequestHandler = (_, res) =>
 	res.render('shop/checkout', {
 		path: '/checkout',
 		pageTitle: 'Checkout',
 	});
-};

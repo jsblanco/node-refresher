@@ -1,20 +1,18 @@
 import { RequestHandler } from 'express';
 import { Product } from '../models/product';
 
-export const getAddProduct: RequestHandler = (_, res) => {
+export const getAddProduct: RequestHandler = (_, res) =>
 	res.render('admin/add-product', {
 		path: '/admin/add-product',
 		pageTitle: 'Add Product',
 	});
-};
 
-export const postAddProduct: RequestHandler = (req, res) => {
-	const product = new Product(req.body.title);
-	product.save();
+export const postAddProduct: RequestHandler = async (req, res) => {
+	await Product.adapter(req.body).save();
 	res.redirect('/');
 };
 
-export const getProducts: RequestHandler = (_, res) => {
+export const getProducts: RequestHandler = (_, res) =>
 	Product.fetchAll((products) => {
 		res.render('admin/product-list', {
 			path: '/admin/products',
@@ -22,4 +20,3 @@ export const getProducts: RequestHandler = (_, res) => {
 			prods: products,
 		});
 	});
-};
