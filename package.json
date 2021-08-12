@@ -4,7 +4,7 @@
 	"description": "Node.js refresher",
 	"main": "./src/app.ts",
 	"scripts": {
-		"start": "nodemon ./src/app.ts",
+		"start": "nodemon --ignore 'data/*.json' ./src/app.ts",
 		"start-server": "ts-node ./src/app.ts"
 	},
 	"author": "Jorge Sb",

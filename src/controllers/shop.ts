@@ -1,4 +1,5 @@
 import { RequestHandler } from 'express';
+import { Cart } from '../models/cart';
 import { Product } from '../models/product';
 
 
@@ -26,6 +27,14 @@ export const getCart: RequestHandler = (_, res) =>
 		pageTitle: 'Your cart',
 	});
 
+export const postCart: RequestHandler = (req, res) => {
+	const { productId } = req.body;
+	Product.findById(productId, (product)=> {
+		Cart.addProduct(productId, product?.price)
+	});
+	res.redirect('/cart');
+};
+
 
 export const getOrders: RequestHandler = (_, res) =>
 	res.render('shop/orders', {
@@ -38,3 +47,14 @@ export const getCheckout: RequestHandler = (_, res) =>
 		path: '/checkout',
 		pageTitle: 'Checkout',
 	});
+
+export const getProductDetails: RequestHandler = (req, res) => {
+	const { productId } = req.params;
+	Product.findById(productId, product =>
+		res.render('shop/product-detail', {
+			path: '/products',
+			pageTitle: `${product?.title} details`,
+			product: product,
+		})
+	);
+};

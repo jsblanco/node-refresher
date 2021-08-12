@@ -14,7 +14,7 @@ export const postAddProduct: RequestHandler = async (req, res) => {
 
 export const getProducts: RequestHandler = (_, res) =>
 	Product.fetchAll((products) => {
-		res.render('admin/product-list', {
+		res.render('admin/products', {
 			path: '/admin/products',
 			pageTitle: 'My products',
 			prods: products,
