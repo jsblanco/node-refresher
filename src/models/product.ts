@@ -1,5 +1,6 @@
 import path from 'path';
 import fs from 'fs';
+import { Cart } from './cart';
 
 const p = path.join(
   __dirname,
@@ -8,29 +9,43 @@ const p = path.join(
   'products.json'
 );
 
-const getProductsFromFile = (cb: (e: Product[]) => any) => {
-  fs.readFile(p, (err, fileContent) => err
+const getProductsFromFile = (cb: (e: Product[]) => any) => fs
+  .readFile(p, (err, fileContent) => err
     ? cb([])
     : cb(JSON.parse(fileContent.toString()))
   );
-};
 
 export class Product {
 
-  id: string;
   constructor(
+    public id: string | null,
     public title: string,
     public imageUrl: string,
     public description: string,
     public price: number,
   ) {
-    this.id = new Date().toString();
   }
 
   save() {
     getProductsFromFile((products: Product[]) => {
-      products.push(this);
-      fs.writeFile(p, JSON.stringify(products), err => console.log);
+      const updatedProducts = [...products];
+      const productIndex = this.id
+        ? products.findIndex(p => p.id === this.id)
+        : -1;
+      productIndex > -1
+        ? updatedProducts[productIndex] = this
+        : updatedProducts.push({ ...this, id: new Date().toString() });
+      fs.writeFile(p, JSON.stringify(updatedProducts), err => console.log);
+    });
+  }
+
+  static deleteById(id: string) {
+    getProductsFromFile(productArr => {
+      const updatedProducts = productArr.filter(product => product.id !== id);
+      const deletedProduct = productArr.find(product => product.id === id);
+      fs.writeFile(p, JSON.stringify(updatedProducts), err =>
+        (!err && deletedProduct) && Cart.deleteProduct(id, +deletedProduct?.price)
+      );
     });
   }
 
@@ -45,6 +60,7 @@ export class Product {
   }
 
   static adapter = (item: ProductCandidate) => new Product(
+    item.id,
     item.title,
     item.imageUrl,
     item.description,
@@ -53,6 +69,7 @@ export class Product {
 };
 
 interface ProductCandidate {
+  id: string | null,
   title: string,
   imageUrl: string,
   description: string,
