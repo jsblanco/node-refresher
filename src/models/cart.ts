@@ -1,7 +1,6 @@
 import path from 'path';
 import fs from 'fs';
 import { Product } from './product';
-import { stringify } from 'querystring';
 
 const p = path.join(
     __dirname,
@@ -10,17 +9,19 @@ const p = path.join(
     'cart.json'
 );
 
+const getCartFromFile = (cb: (e: CartData) => any) => fs
+    .readFile(p, (err, fileContent) => err
+        ? cb({ products: [], totalPrice: 0 })
+        : cb(JSON.parse(fileContent.toString()))
+    );
+
 export class Cart {
     private static updateCart(cart: CartData) {
-        fs.writeFile(p, JSON.stringify(cart), console.log);
+        fs.writeFile(p, JSON.stringify(cart), (err) => err && console.log(err));
     }
 
     static addProduct(id: string, price: number) {
-        fs.readFile(p, (err, fileContent) => {
-            const cart: CartData = err
-                ? { products: [], totalPrice: 0 }
-                : JSON.parse(fileContent.toString());
-
+        getCartFromFile(cart => {
             const existingProductIndex = cart.products.findIndex(prod => prod.id === id);
 
             existingProductIndex > -1
@@ -37,10 +38,7 @@ export class Cart {
     }
 
     static deleteProduct(id: string, productPrice: number) {
-        fs.readFile(p, (err, fileContent) => {
-            if (err) return;
-
-            const cart: CartData = JSON.parse(fileContent.toString());
+        getCartFromFile(cart => {
             const product = cart.products.find(prod => prod.id === id);
             if (!product) return;
 
@@ -51,10 +49,7 @@ export class Cart {
     }
 
     static getCart(cb: (e?: CartData) => any) {
-        fs.readFile(p, (err, fileContent) => {
-            const cart = JSON.parse(fileContent.toString());
-            cb(err ? null : cart);
-        });
+        getCartFromFile(cb);
     }
 }
 
