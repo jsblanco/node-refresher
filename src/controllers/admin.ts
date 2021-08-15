@@ -9,13 +9,12 @@ export const getAddProduct: RequestHandler = (_, res) =>
 	});
 
 export const getProducts: RequestHandler = (_, res) =>
-	Product.fetchAll((products) => {
+	Product.fetchAll((products) =>
 		res.render('admin/products', {
 			path: '/admin/products',
 			pageTitle: 'My products',
 			prods: products,
-		});
-	});
+		}));
 
 export const getEditProduct: RequestHandler = (req, res) => {
 	const { edit } = req.query;

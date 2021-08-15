@@ -15,7 +15,7 @@ export class Cart {
         fs.writeFile(p, JSON.stringify(cart), console.log);
     }
 
-    static addProduct(id: string, price = 0) {
+    static addProduct(id: string, price: number) {
         fs.readFile(p, (err, fileContent) => {
             const cart: CartData = err
                 ? { products: [], totalPrice: 0 }
@@ -42,14 +42,26 @@ export class Cart {
 
             const cart: CartData = JSON.parse(fileContent.toString());
             const product = cart.products.find(prod => prod.id === id);
-            if (!product?.qty) return;
+            if (!product) return;
 
             cart.totalPrice -= (productPrice * product.qty);
             cart.products = cart.products.filter(prod => prod.id !== id);
             this.updateCart(cart);
         });
     }
+
+    static getCart(cb: (e?: CartData) => any) {
+        fs.readFile(p, (err, fileContent) => {
+            const cart = JSON.parse(fileContent.toString());
+            cb(err ? null : cart);
+        });
+    }
 }
+
+export type ProductsInCart = {
+    productData: Product,
+    qty: number;
+}[];
 
 type CartData = {
     products: ProductCartEntry[];
